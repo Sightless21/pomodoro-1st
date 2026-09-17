@@ -1,11 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { FocusSession } from "@/components/ui/focus-session";
-import type {
-  OrganismAction,
-  OrganismState,
-} from "@/components/ui/organism-composition";
+import { FocusSession, type FocusAction, type FocusState } from "@/components/focus-timer";
 import { DurationPopover } from "@/components/duration-popover";
 import { Meta } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
@@ -40,11 +36,11 @@ const countdownDigit: React.CSSProperties = {
 type Phase = "work" | "break";
 
 // "ready": waiting for the user to press Start for this round.
-// "countdown": the 5-second lead-in, ticking down before the round begins.
+// "countdown": the 10-second lead-in, ticking down before the round begins.
 // "running": FocusSession is mounted and the round is actually underway.
 type Stage = "ready" | "countdown" | "running";
 
-const COUNTDOWN_SECONDS = 5;
+const COUNTDOWN_SECONDS = 10;
 
 /**
  * Preloads a public/ audio file once and returns a function that replays it
@@ -148,7 +144,7 @@ export function FocusTime() {
     setStage("countdown");
   };
 
-  const handleStateChange = (state: OrganismState) => {
+  const handleStateChange = (state: FocusState) => {
     const remaining = state.focusRemainingSeconds;
     if (remaining == null || remaining === lastRemaining.current) return;
     lastRemaining.current = remaining;
@@ -163,7 +159,7 @@ export function FocusTime() {
     }
   };
 
-  const action = (event: OrganismAction) => {
+  const action = (event: FocusAction) => {
     if (event.action === "complete") {
       if (phase === "work") {
         setPhase("break");
