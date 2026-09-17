@@ -1,11 +1,15 @@
 import { FocusTime } from "@/components/focus-time";
+import {WordMarquee} from "@/components/word-marquee";
 
 export default function Home() {
   return (
-    <main className="flex h-screen items-center justify-center">
-      <div className="text-7xl font-bold font-limelight">
-        < FocusTime />
+    <main>
+        <WordMarquee direction="left"/>
+      <div className="">
+        <FocusTime />
       </div>
+
+        <WordMarquee direction="right"/>
     </main>
-  )
+  );
 }
