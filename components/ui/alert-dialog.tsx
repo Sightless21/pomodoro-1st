@@ -172,6 +172,7 @@ export function AlertDialogAction({
 }: AlertDialogActionProps) {
   return (
     <Primitive.Action
+      asChild
       data-slot="alert-dialog-action"
       data-part="action"
       {...props}
@@ -190,6 +191,7 @@ export function AlertDialogCancel({
 }: AlertDialogCancelProps) {
   return (
     <Primitive.Cancel
+      asChild
       data-slot="alert-dialog-cancel"
       data-part="action"
       {...props}
