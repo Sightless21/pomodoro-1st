@@ -49,6 +49,19 @@ function useSoundPlayer(src: string) {
   }, []);
 }
 
+/**
+ * Mirrors session progress onto CSS custom properties on <html>, which the
+ * fixed marquee bars in app/page.tsx read to fill like an HP bar. Written
+ * straight to the DOM (not React state) since it's a pure visual side effect
+ * that would otherwise force a re-render every second.
+ */
+function setProgressVars(progress: number, color: string) {
+  if (typeof document === "undefined") return;
+  const root = document.documentElement.style;
+  root.setProperty("--focus-progress", String(progress));
+  root.setProperty("--focus-fill", color);
+}
+
 export function FocusTime() {
   const [workMinutes, setWorkMinutes] = React.useState("25");
   const [breakMinutes, setBreakMinutes] = React.useState("5");
@@ -60,24 +73,31 @@ export function FocusTime() {
   const playTick = useSoundPlayer("/sounds/orb.mp3");
   const playDone = useSoundPlayer("/sounds/levelup.mp3");
   // Tracks the last remaining-seconds value we saw, so we fire each sound
-  // exactly once per second rather than on every re-render.
+  // (and each progress update) exactly once per second, not per re-render.
   const lastRemaining = React.useRef<number | null>(null);
 
   // Empty string only exists mid-edit inside the popover input; fall back to
   // the last committed value so the session never runs on an empty duration.
   const activeMinutes =
     (phase === "work" ? workMinutes : breakMinutes) || (phase === "work" ? "25" : "5");
+  const totalSeconds = Number(activeMinutes) * 60;
+  const fillColor = phase === "work" ? "var(--v-blue)" : "var(--v-olive)";
 
-  // Reset the tick tracker whenever a fresh session starts (new duration/phase),
-  // so a stale "5 seconds left" from the previous session can't get reused.
+  // Reset both the tick tracker and the marquee fill whenever a fresh
+  // session starts (new duration/phase), so nothing carries over visually
+  // or audibly from the previous session.
   React.useEffect(() => {
     lastRemaining.current = null;
-  }, [activeMinutes, phase]);
+    setProgressVars(0, fillColor);
+  }, [activeMinutes, phase, fillColor]);
 
   const handleStateChange = (state: OrganismState) => {
     const remaining = state.focusRemainingSeconds;
     if (remaining == null || remaining === lastRemaining.current) return;
     lastRemaining.current = remaining;
+
+    const progress = totalSeconds > 0 ? 1 - remaining / totalSeconds : 0;
+    setProgressVars(Math.min(1, Math.max(0, progress)), fillColor);
 
     if (remaining > 0 && remaining <= 5) {
       playTick(); // orb.mp3 — last 5 seconds
@@ -143,7 +163,10 @@ export function FocusTime() {
             ? "One task. A little uninterrupted time."
             : "Step away. It will still be there when you return."
         }
-        durationSeconds={Number(activeMinutes) * 60}
+        durationSeconds={totalSeconds}
+        // Break sessions start ticking the instant they mount — no Start
+        // click required. Work sessions still wait for the user, unchanged.
+        defaultState={phase === "break" ? { focusRunning: true } : undefined}
         onAction={action}
         onStateChange={handleStateChange}
       />
