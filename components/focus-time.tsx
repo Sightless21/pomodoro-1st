@@ -267,7 +267,7 @@ export function FocusTime() {
           onStateChange={handleStateChange}
         />
       )}
-      <Meta data-example-receipt="focus-session">{receipt}</Meta>
+      <Meta data-example-receipt="focus-session" className="text-center">{receipt}</Meta>
     </div>
   );
 }
