@@ -111,6 +111,7 @@ export function DurationPopover({
               gap: 16,
               justifyItems: "center",
               minWidth: 240,
+              fontFamily: "var(--font-limelight)",
             }}
           >
             <Label htmlFor={id}>{label}</Label>
