@@ -24,6 +24,9 @@
 .v-organism__stats .v-icon {width:18px;height:18px;}
 .v-organism__button-label {display:inline-flex;align-items:center;justify-content:center;gap:7px;}
 .v-organism__button-label .v-icon {flex:none;}
+/* Icon-only circular controls: flex the assembly wrapper so the glyph centers
+   exactly, instead of riding the line box's text baseline. */
+.v-ibtn > .v-assembly-content {display:inline-flex;align-items:center;justify-content:center;}
 .v-organism__composer[data-slot="input-group"] {flex-wrap:nowrap;}
 .v-organism__composer [data-slot="input-group-input"] {flex-basis:0;}
 .v-organism__thread {display:block;}
