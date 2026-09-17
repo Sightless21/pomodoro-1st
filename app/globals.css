@@ -28,35 +28,8 @@
 @import "../styles/cojeev/message-scroller.css";
 @import "../styles/cojeev/input-group.css";
 @import "../styles/cojeev/organism-composition.css";
-@import "@/styles/cojeev-fonts.css";
-@import "@/styles/cojeev/tokens.css";
-@import "@/styles/cojeev/theme.css";
-@import "@/styles/cojeev/base.css";
-@import "@/styles/cojeev/morph.css";
-@import "@/styles/cojeev/flow-press.css";
-@import "@/styles/cojeev/spinner.css";
-@import "@/styles/cojeev/presence.css";
-@import "@/styles/cojeev/badge.css";
-@import "@/styles/cojeev/control-appearance.css";
-@import "@/styles/cojeev/icon.css";
-@import "@/styles/cojeev/scroll-area.css";
-@import "@/styles/cojeev/item.css";
-@import "@/styles/cojeev/progress.css";
-@import "@/styles/cojeev/typography.css";
-@import "@/styles/cojeev/shape.css";
-@import "@/styles/cojeev/assembly-part.css";
-@import "@/styles/cojeev/button.css";
-@import "@/styles/cojeev/animated-icon.css";
-@import "@/styles/cojeev/textarea.css";
-@import "@/styles/cojeev/card.css";
-@import "@/styles/cojeev/avatar.css";
-@import "@/styles/cojeev/bubble.css";
-@import "@/styles/cojeev/input.css";
-@import "@/styles/cojeev/message-scroller.css";
-@import "@/styles/cojeev/input-group.css";
-@import "@/styles/cojeev/organism-composition.css";
-@import "@/styles/cojeev/toggle.css";
-@import "@/styles/cojeev/toggle-group.css";
+@import "../styles/cojeev/toggle.css";
+@import "../styles/cojeev/toggle-group.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -64,6 +37,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
+  --font-limelight: var(--font-limelight);
   --font-mono: var(--font-geist-mono);
   --color-v-pink: var(--v-pink);
   --color-v-olive: var(--v-olive);

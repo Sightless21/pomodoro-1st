@@ -115,7 +115,7 @@ function Button({
     >
       <MotionPresence>
         {busy && (
-          <MotionSurface key="loading" preset="scale" render={<span data-slot="button-loading" className="v-btn__loading" aria-hidden="true" />}>{loadingIndicator ?? <ButtonIndicator />}</MotionSurface>
+          <MotionSurface key="loading" preset="scale" asChild><span data-slot="button-loading" className="v-btn__loading" aria-hidden="true">{loadingIndicator ?? <ButtonIndicator />}</span></MotionSurface>
         )}
       </MotionPresence>
       {asChild ? <Slottable>{children}</Slottable> : children}
