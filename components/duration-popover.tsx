@@ -167,7 +167,7 @@ export function DurationPopover({
                   <Button
                     type="button"
                     size="sm"
-                    variant="ghost"
+                    variant="outline"
                     aria-label={`Increase by ${step} minutes`}
                     onClick={() => handleStep(step)}
                   >

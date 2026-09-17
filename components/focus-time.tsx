@@ -36,11 +36,11 @@ const countdownDigit: React.CSSProperties = {
 type Phase = "work" | "break";
 
 // "ready": waiting for the user to press Start for this round.
-// "countdown": the 10-second lead-in, ticking down before the round begins.
+// "countdown": the 5-second lead-in, ticking down before the round begins.
 // "running": FocusSession is mounted and the round is actually underway.
 type Stage = "ready" | "countdown" | "running";
 
-const COUNTDOWN_SECONDS = 10;
+const COUNTDOWN_SECONDS = 5;
 
 /**
  * Preloads a public/ audio file once and returns a function that replays it
@@ -118,7 +118,7 @@ export function FocusTime() {
     setProgressVars(0, fillColor);
   }, [activeMinutes, phase, fillColor, stage]);
 
-  // The 10-second lead-in before each round (work or break) actually
+  // The 5-second lead-in before each round (work or break) actually
   // starts. Ticks once a second using the same orb.mp3 cue already used for
   // a session's final 5 seconds, then plays levelup.mp3 — the same cue
   // already used when a session finishes — right as the round begins.
@@ -168,7 +168,7 @@ export function FocusTime() {
         setPhase("work");
         setReceipt(`Break's over — get ready for a fresh ${workMinutes || "25"}-minute session.`);
       }
-      // Every new round — work or break — gets the same 10-second lead-in
+      // Every new round — work or break — gets the same 5-second lead-in
       // before it actually starts ticking.
       beginCountdown();
       return;
@@ -196,7 +196,7 @@ export function FocusTime() {
             if (phase === "work") {
               // Committing a new duration always interrupts whatever stage
               // this round was in (that's what the confirm dialog warns
-              // about) — drop back to "ready" so Start re-arms the 10s lead-in.
+              // about) — drop back to "ready" so Start re-arms the 5s lead-in.
               setStage("ready");
               setReceipt(`A fresh ${value}-minute session is ready.`);
             }
@@ -259,7 +259,7 @@ export function FocusTime() {
               : "Step away. It will still be there when you return."
           }
           durationSeconds={totalSeconds}
-          // We've already run our own 10s lead-in by the time this mounts,
+          // We've already run our own 5s lead-in by the time this mounts,
           // so every round starts ticking immediately — no separate Start
           // click inside FocusSession itself.
           defaultState={{ focusRunning: true }}
