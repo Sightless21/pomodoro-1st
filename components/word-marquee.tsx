@@ -15,12 +15,13 @@ export function WordMarquee({ direction = "left" }: WordMarqueeProps) {
     pixelsPerSecond={60}
     label=""
     hideHeader
+    className="border"
     >
       {words.map((word) => (
         <Title
           key={word}
           as="span"
-          style={{ fontSize: "clamp(32px,5vw,60px)", fontWeight: 700, fontFamily: "var(--font-heading)" }}
+          style={{ fontSize: "clamp(30px,4vw,50px)", fontWeight: 700, fontFamily: "var(--font-limelight)" }}
         >
           {word}
         </Title>

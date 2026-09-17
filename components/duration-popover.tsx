@@ -65,6 +65,12 @@ export function DurationPopover({
     if (draft === "") setDraft(String(min));
   };
 
+  const handleInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    requestDone();
+  };
+
   const handleStep = (delta: number) => {
     const base = draft === "" ? 0 : Number(draft);
     setDraft(String(clamp(base + delta)));
@@ -115,6 +121,7 @@ export function DurationPopover({
                 value={draft}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
+                onKeyDown={handleInputKeyDown}
                 inputMode="numeric"
                 pattern="[0-9]*"
                 autoComplete="off"
@@ -137,44 +144,64 @@ export function DurationPopover({
               <span style={{ fontSize: 18, opacity: 0.6 }}>min</span>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                gap: 10,
-                flexWrap: "wrap",
-                justifyContent: "center",
-              }}
-            >
-              {quickSteps.map((step) => (
-                <div
-                  key={step}
+            <div style={{ display: "grid", gap: 10, width: "100%" }}>
+              <div style={{ display: "grid", gap: 6, justifyItems: "center" }}>
+                <span
                   style={{
-                    display: "flex",
-                    gap: 4,
-                    borderRadius: "var(--r-pill, 999px)",
-                    overflow: "hidden",
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    opacity: 0.5,
                   }}
                 >
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    aria-label={`Decrease by ${step} minutes`}
-                    onClick={() => handleStep(-step)}
-                  >
-                    −{step}
-                  </Button>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    aria-label={`Increase by ${step} minutes`}
-                    onClick={() => handleStep(step)}
-                  >
-                    +{step}
-                  </Button>
+                  Decrease
+                </span>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center" }}>
+                  {quickSteps.map((step) => (
+                    <Button
+                      key={`decrease-${step}`}
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      disabled={draft !== "" && Number(draft) <= min}
+                      aria-label={`Decrease by ${step} minutes`}
+                      onClick={() => handleStep(-step)}
+                    >
+                      −{step}
+                    </Button>
+                  ))}
                 </div>
-              ))}
+              </div>
+
+              <div style={{ display: "grid", gap: 6, justifyItems: "center" }}>
+                <span
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    opacity: 0.5,
+                  }}
+                >
+                  Increase
+                </span>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "center" }}>
+                  {quickSteps.map((step) => (
+                    <Button
+                      key={`increase-${step}`}
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      disabled={draft !== "" && Number(draft) >= max}
+                      aria-label={`Increase by ${step} minutes`}
+                      onClick={() => handleStep(step)}
+                    >
+                      +{step}
+                    </Button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             <Button size="sm" onClick={requestDone}>

@@ -41,6 +41,7 @@ export default function Home() {
           // Keep content clear of the fixed marquee rows above/below.
           paddingTop: "var(--marquee-row-height, 96px)",
           paddingBottom: "var(--marquee-row-height, 96px)",
+          fontFamily: "var(--font-limelight)",
         }}
       >
         <FocusTime />
