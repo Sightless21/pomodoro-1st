@@ -17,11 +17,8 @@ export type FocusAction = {
 };
 
 export type FocusSessionProps = {
-  /** Kept for API compatibility with the design-system FocusSession; not rendered here. */
   name?: string;
-  /** Kept for API compatibility with the design-system FocusSession; not rendered here. */
   description?: string;
-  /** Real local session length, clamped to 1–86400 seconds. Changing it resets the session. */
   durationSeconds?: number;
   state?: FocusState;
   defaultState?: Partial<FocusState>;
@@ -33,20 +30,12 @@ function normalizeDuration(value = 1500) {
   return Number.isFinite(value) ? Math.max(1, Math.min(86400, Math.round(value))) : 1500;
 }
 
-/** The countdown follows elapsed wall time, including time spent in a hidden tab. */
 function secondsRemaining(deadline: number, now = Date.now()) {
   return Number.isFinite(deadline) && Number.isFinite(now)
     ? Math.max(0, Math.ceil((deadline - now) / 1000))
     : 0;
 }
 
-/**
- * A stripped-down focus/break timer: just the big MM:SS readout plus a
- * pause/resume toggle and a reset button — no card surface, heading, art,
- * progress bar, or caption. Mirrors the timer math of the design-system's
- * FocusSession (kind="focus" in organism-composition.tsx) so it's a drop-in
- * replacement wherever only the bare countdown is wanted.
- */
 export function FocusSession({
   durationSeconds = 1500,
   state: controlled,
@@ -103,7 +92,6 @@ export function FocusSession({
       window.clearInterval(interval);
       document.removeEventListener("visibilitychange", tick);
     };
-    // The deadline stays stable while tick updates only the displayed seconds.
   }, [state.focusRunning, state.focusEndsAt, duration, update]);
 
   function focusAction(action: "start" | "pause" | "reset") {

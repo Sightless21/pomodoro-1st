@@ -11,27 +11,15 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 type DurationPopoverProps = {
-  /** Text on the trigger button. */
   triggerLabel: React.ReactNode;
-  /** Heading shown above the input, e.g. "Work duration". */
   label: string;
-  /** Currently committed value, in minutes. */
   minutes: string;
-  /** Fires only after the user confirms the reset warning. */
   onCommit: (minutes: string) => void;
-  /** Quick +/- steps, in minutes. */
   quickSteps?: number[];
   min?: number;
-  /** Defaults to 60 — durations here never exceed one hour. */
   max?: number;
 };
 
-/**
- * A borderless, digits-only minute input plus +/- quick steps, in a Popover.
- * Edits stay local (a draft) until "Done" is pressed; committing a real
- * change always asks for confirmation first, since it resets the running
- * session.
- */
 export function DurationPopover({
   triggerLabel,
   label,
@@ -79,7 +67,6 @@ export function DurationPopover({
   const requestDone = () => {
     const nextValue = draft === "" ? String(min) : draft;
     if (nextValue === minutes) {
-      // Nothing actually changed — nothing to warn about, just close.
       setOpen(false);
       return;
     }
