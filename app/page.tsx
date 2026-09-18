@@ -30,6 +30,7 @@ export default function Home() {
       <div style={{ ...barShell, top: 0 }}>
         <div aria-hidden style={progressFill} />
         <WordMarquee direction="left" />
+        {/* navigation */}
       </div>
 
       <main
