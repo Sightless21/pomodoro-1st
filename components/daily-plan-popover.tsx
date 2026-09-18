@@ -88,7 +88,7 @@ export function DailyPlanPopover({
         </IconButton>
       </PopoverTrigger>
       <PopoverContent align="end">
-        <div className="grid min-w-64 max-w-90 gap-4 font-limelight">
+        <div className="grid min-w-64 max-w-99 gap-4 font-limelight">
           {/* Today's focus goal */}
           <div
             className="grid justify-center justify-items-center gap-2 text-center"

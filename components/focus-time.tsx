@@ -12,33 +12,6 @@ import { SoundSettingPopover } from "@/components/sound-setting-popover";
 import { Meta } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
 
-const frame: React.CSSProperties = {
-  display: "grid",
-  gap: 20,
-  width: "100%",
-  maxWidth: 440,
-  marginInline: "auto",
-  minWidth: 0,
-};
-
-// Shared shell for the "ready" / "complete" / "countdown" gate screens, so
-// the layout doesn't jump when swapping between them and FocusSession.
-const gateFrame: React.CSSProperties = {
-  display: "grid",
-  gap: 16,
-  justifyItems: "center",
-  minHeight: 220,
-  alignContent: "center",
-  textAlign: "center",
-};
-
-const countdownDigit: React.CSSProperties = {
-  fontSize: 88,
-  lineHeight: 1,
-  fontWeight: 700,
-  fontVariantNumeric: "tabular-nums",
-};
-
 type Phase = "work" | "break";
 
 // "ready": waiting for the user to press Start for this round.
@@ -241,17 +214,12 @@ export function FocusTime() {
   };
 
   return (
-    <div style={frame}>
-      <div
-        style={{
-          position: "fixed",
-          top: "calc(var(--marquee-row-height, 96px) + 16px)",
-          right: 16,
-          zIndex: 50,
-        }}
-        className="fixed flex gap-2 top-[calc(var(--marquee-row-height,96px)+16px)] right-4 z-50"
-      >
-        <SoundSettingPopover volume={volume} onVolumeChange={setVolume} />
+    <div className="grid w-full max-w-md min-w-0 mx-auto gap-5">
+      <div className="fixed flex gap-2 top-[calc(var(--marquee-row-height,96px)+16px)] right-4 z-50">
+        <SoundSettingPopover
+          volume={volume}
+          onVolumeChange={setVolume}
+        />
         <DailyPlanPopover
           workMinutes={workMinutes}
           goalHours={dailyGoalHours}
@@ -263,7 +231,7 @@ export function FocusTime() {
         />
       </div>
 
-      <div className="flex gap-2 justify-center flex-wrap">
+      <div className="flex flex-wrap justify-center gap-2">
         <DurationPopover
           triggerLabel={`Work: ${workMinutes || "…"} min`}
           label="Work duration"
@@ -271,43 +239,44 @@ export function FocusTime() {
           onCommit={(value) => {
             setWorkMinutes(value);
             if (phase === "work") {
-              // Committing a new duration always interrupts whatever stage
-              // this round was in (that's what the confirm dialog warns
-              // about) — drop back to "ready" so Start re-arms the lead-in.
               setStage("ready");
-              setReceipt(`A fresh ${value}-minute session is ready.`);
+              setReceipt(
+                `A fresh ${value}-minute session is ready.`,
+              );
             }
           }}
         />
+
         <DurationPopover
           triggerLabel={`Break: ${breakMinutes || "…"} min`}
           label="Break duration"
           minutes={breakMinutes}
           onCommit={(value) => {
             setBreakMinutes(value);
-            // Only the regular break is affected — editing it mid long-break
-            // shouldn't interrupt the long break already in progress.
             if (phase === "break" && !isLongBreak) {
               setStage("ready");
-              setReceipt(`A fresh ${value}-minute break is ready.`);
+              setReceipt(
+                `A fresh ${value}-minute break is ready.`,
+              );
             }
           }}
         />
       </div>
 
-      <Meta style={{ textAlign: "center", opacity: 0.6 }}>
+      <Meta className="text-center opacity-60">
         {phase === "work"
           ? `Session ${completedWorkSessions + 1}${sessionsPlanned ? ` of ${sessionsPlanned}` : ""}`
           : `${isLongBreak ? "Long break" : "Break"} after session ${completedWorkSessions}${sessionsPlanned ? ` of ${sessionsPlanned}` : ""}`}
       </Meta>
 
       {stage === "ready" && (
-        <div style={gateFrame}>
+        <div className="grid min-h-56 content-center justify-items-center gap-4 text-center">
           <Meta>
             {phase === "work"
               ? "One task. A little uninterrupted time."
               : "Step away. It will still be there when you return."}
           </Meta>
+
           <Button
             onClick={() => {
               setReceipt(
@@ -326,19 +295,39 @@ export function FocusTime() {
       )}
 
       {stage === "complete" && (
-        <div style={gateFrame} aria-live="polite">
-          <Meta style={{ fontSize: 20, fontWeight: 600 }}>{receipt}</Meta>
-          <Button variant="secondary" size="sm" onClick={beginCountdown}>
+        <div
+          className="grid min-h-56 content-center justify-items-center gap-4 text-center"
+          aria-live="polite"
+        >
+          <Meta className="text-xl font-semibold">
+            {receipt}
+          </Meta>
+
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={beginCountdown}
+          >
             Skip
           </Button>
         </div>
       )}
 
       {stage === "countdown" && (
-        <div style={gateFrame} aria-live="polite">
-          <Meta>{phase === "work" ? "Work starts in" : "Break starts in"}</Meta>
-          <span style={countdownDigit}>
-            {countdownRemaining > 0 ? countdownRemaining : "Go"}
+        <div
+          className="grid min-h-56 content-center justify-items-center gap-4 text-center"
+          aria-live="polite"
+        >
+          <Meta>
+            {phase === "work"
+              ? "Work starts in"
+              : "Break starts in"}
+          </Meta>
+
+          <span className="text-8xl leading-none font-bold tabular-nums">
+            {countdownRemaining > 0
+              ? countdownRemaining
+              : "Go"}
           </span>
         </div>
       )}
@@ -347,7 +336,9 @@ export function FocusTime() {
         <FocusSession
           key={`${phase}-${activeMinutes}`}
           name={
-            phase === "work" ? "Make room for one good idea" : "Take a breather"
+            phase === "work"
+              ? "Make room for one good idea"
+              : "Take a breather"
           }
           description={
             phase === "work"
@@ -355,15 +346,16 @@ export function FocusTime() {
               : "Step away. It will still be there when you return."
           }
           durationSeconds={totalSeconds}
-          // We've already run our own lead-in by the time this mounts, so
-          // every round starts ticking immediately — no separate Start
-          // click inside FocusSession itself.
           defaultState={{ focusRunning: true }}
           onAction={action}
           onStateChange={handleStateChange}
         />
       )}
-      <Meta data-example-receipt="focus-session" className="text-center">
+
+      <Meta
+        data-example-receipt="focus-session"
+        className="text-center"
+      >
         {receipt}
       </Meta>
     </div>

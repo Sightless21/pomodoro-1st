@@ -127,26 +127,28 @@ export function FocusSession({
   }
 
   return (
-    <div style={{ display: "grid", gap: 20, justifyItems: "center", textAlign: "center" }}>
+    <div className="grid justify-items-center gap-5 text-center">
       <Meta
         role="timer"
         aria-live="off"
         aria-label={`${Math.floor(remaining / 60)} minutes ${remaining % 60} seconds remaining`}
-        style={{
-          fontSize: 80,
-          lineHeight: 1,
-          fontWeight: 700,
-          fontVariantNumeric: "tabular-nums",
-        }}
+        className="text-[90px] leading-none font-bold tabular-nums"
       >
         {String(Math.floor(remaining / 60)).padStart(2, "0")}
         <span>:</span>
         {String(remaining % 60).padStart(2, "0")}
       </Meta>
 
-      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-        <Button variant="accent" onClick={() => focusAction(state.focusRunning ? "pause" : "start")}>
-          <AnimatedIcon name={state.focusRunning ? "pause" : "play"} />
+      <div className="flex items-center gap-2.5">
+        <Button
+          variant="accent"
+          onClick={() =>
+            focusAction(state.focusRunning ? "pause" : "start")
+          }
+        >
+          <AnimatedIcon
+            name={state.focusRunning ? "pause" : "play"}
+          />
           {state.focusRunning
             ? "Pause"
             : remaining === 0
@@ -155,7 +157,12 @@ export function FocusSession({
                 ? "Resume"
                 : "Start focusing"}
         </Button>
-        <IconButton variant="cream" aria-label="Reset focus session" onClick={() => focusAction("reset")}>
+
+        <IconButton
+          variant="cream"
+          aria-label="Reset focus session"
+          onClick={() => focusAction("reset")}
+        >
           <AnimatedIcon name="refresh-cw" />
         </IconButton>
       </div>

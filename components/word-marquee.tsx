@@ -12,7 +12,7 @@ export function WordMarquee({ direction = "left" }: WordMarqueeProps) {
   return (
     <Marquee
     direction={direction} 
-    pixelsPerSecond={60}
+    pixelsPerSecond={80}
     label=""
     hideHeader
     className="border"

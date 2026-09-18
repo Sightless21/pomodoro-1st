@@ -32,7 +32,7 @@
 @import "../styles/cojeev/toggle-group.css";
 @import "../styles/cojeev/marquee.css";
 @import "../styles/cojeev/slider.css";
-
+@import "../styles/cojeev/meta-balls.css";
 
 @custom-variant dark (&:is(.dark *));
 

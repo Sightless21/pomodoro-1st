@@ -15,9 +15,7 @@ import {
   SliderOutput,
   type SliderAppearance,
 } from "@/components/ui/slider";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Meta } from "@/components/ui/typography";
 
 type SoundSettingPopoverProps = {
   volume: number[];
@@ -33,7 +31,7 @@ export function SoundSettingPopover({ volume, onVolumeChange }: SoundSettingPopo
         </IconButton>
       </PopoverTrigger>
       <PopoverContent align="end">
-        <div className="grid gap-4 min-w-55">
+        <div className="grid gap-4 min-w-55 font-limelight">
           <SliderWrapper>
             <SliderRow className="flex flow-row items-center justify-between gap-2">
               <Label htmlFor="volume-slider">Volume: </Label>

@@ -1,30 +1,29 @@
 import { FocusTime } from "@/components/focus-time";
 import { WordMarquee } from "@/components/word-marquee";
+import { FocusBackground } from "@/components/focus-background";
 
 export default function Home() {
   return (
     <>
       {/* Top Bar */}
       <div className="fixed top-0 left-0 right-0 z-40 overflow-hidden">
-        <div 
-          aria-hidden 
-          className="absolute inset-0 w-[calc(var(--focus-progress,0)*100%)] bg-(--focus-fill,var(--v-blue)) opacity-35 transition-[width] duration-1000 ease-linear pointer-events-none" 
+        <div
+          aria-hidden
+          className="absolute inset-0 w-[calc(var(--focus-progress,0)*100%)] bg-(--focus-fill,var(--v-blue)) opacity-35 transition-[width] duration-1000 ease-linear pointer-events-none"
         />
         <WordMarquee direction="left" />
-        {/* navigation */}
       </div>
 
-      <main
-        className="min-h-dvh flex items-center justify-center pt-[(--marquee-row-height,96px)] pb-[(--marquee-row-height,96px)] font-limelight"
-      >
+      <main className="relative min-h-dvh flex items-center justify-center pt-(--marquee-row-height,96px) pb-(--marquee-row-height,96px) font-limelight">
+        <FocusBackground />
         <FocusTime />
       </main>
 
       {/* Bottom Bar */}
       <div className="fixed bottom-0 left-0 right-0 z-40 overflow-hidden">
-        <div 
-          aria-hidden 
-          className="absolute inset-0 w-[calc(var(--focus-progress,0)*100%)] bg-(--focus-fill,var(--v-blue)) opacity-35 transition-[width] duration-1000 ease-linear pointer-events-none" 
+        <div
+          aria-hidden
+          className="absolute inset-0 w-[calc(var(--focus-progress,0)*100%)] bg-(--focus-fill,var(--v-blue)) opacity-35 transition-[width] duration-1000 ease-linear pointer-events-none"
         />
         <WordMarquee direction="right" />
       </div>
