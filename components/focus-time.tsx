@@ -5,7 +5,7 @@ import {
   FocusSession,
   type FocusAction,
   type FocusState,
-} from "@/components/focus-timer";
+} from "@/components/focus-session";
 import { DurationPopover } from "@/components/duration-popover";
 import { DailyPlanPopover } from "@/components/daily-plan-popover";
 import { SoundSettingPopover } from "@/components/sound-setting-popover";
@@ -44,7 +44,6 @@ function useSoundPlayer(src: string, volume: number) {
     };
   }, [src]);
 
-  // volume เปลี่ยนเมื่อไหร่ ก็ sync เข้า element ทันที ไม่ต้องรอรอบเล่นถัดไป
   React.useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = Math.min(1, Math.max(0, volume / 100));
