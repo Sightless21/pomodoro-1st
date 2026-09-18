@@ -6,10 +6,12 @@ import {
   type FocusAction,
   type FocusState,
 } from "@/components/focus-session";
+
 import { DurationPopover } from "@/components/duration-popover";
 import { DailyPlanPopover } from "@/components/daily-plan-popover";
 import { SoundSettingPopover } from "@/components/sound-setting-popover";
 import { Meta } from "@/components/ui/typography";
+
 import { Button } from "@/components/ui/button";
 
 type Phase = "work" | "break";
