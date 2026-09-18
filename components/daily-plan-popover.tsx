@@ -157,7 +157,7 @@ export function DailyPlanPopover({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <IconButton variant="cream" aria-label="Today's plan settings">
+        <IconButton variant="pink" aria-label="Today's plan settings">
           <AnimatedIcon name="settings" />
         </IconButton>
       </PopoverTrigger>
