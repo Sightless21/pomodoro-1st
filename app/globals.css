@@ -31,6 +31,8 @@
 @import "../styles/cojeev/toggle.css";
 @import "../styles/cojeev/toggle-group.css";
 @import "../styles/cojeev/marquee.css";
+@import "../styles/cojeev/slider.css";
+
 
 @custom-variant dark (&:is(.dark *));
 

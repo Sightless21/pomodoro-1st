@@ -1,9 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { FocusSession, type FocusAction, type FocusState } from "@/components/focus-timer";
+import {
+  FocusSession,
+  type FocusAction,
+  type FocusState,
+} from "@/components/focus-timer";
 import { DurationPopover } from "@/components/duration-popover";
 import { DailyPlanPopover } from "@/components/daily-plan-popover";
+import { SoundSettingPopover } from "@/components/sound-setting-popover";
 import { Meta } from "@/components/ui/typography";
 import { Button } from "@/components/ui/button";
 
@@ -53,7 +58,7 @@ const LONG_BREAK_EVERY = 4;
  * from the start — safe to call rapidly (e.g. once per second) without
  * waiting for the previous play to finish.
  */
-function useSoundPlayer(src: string) {
+function useSoundPlayer(src: string, volume: number) {
   const audioRef = React.useRef<HTMLAudioElement | null>(null);
 
   React.useEffect(() => {
@@ -66,14 +71,18 @@ function useSoundPlayer(src: string) {
     };
   }, [src]);
 
+  // volume เปลี่ยนเมื่อไหร่ ก็ sync เข้า element ทันที ไม่ต้องรอรอบเล่นถัดไป
+  React.useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = Math.min(1, Math.max(0, volume / 100));
+    }
+  }, [volume]);
+
   return React.useCallback(() => {
     const audio = audioRef.current;
     if (!audio) return;
     audio.currentTime = 0;
-    void audio.play().catch(() => {
-      // Playback can be blocked until the user has interacted with the page —
-      // safe to ignore, the sound simply won't fire on that first tick.
-    });
+    void audio.play().catch(() => {});
   }, []);
 }
 
@@ -114,8 +123,10 @@ export function FocusTime() {
     return Math.max(1, Math.round((goalHours * 60) / workMin));
   }, [dailyGoalHours, workMinutes]);
 
-  const playTick = useSoundPlayer("/sounds/orb.mp3");
-  const playDone = useSoundPlayer("/sounds/levelup.mp3");
+  const [volume, setVolume] = React.useState([50]);
+
+  const playTick = useSoundPlayer("/sounds/orb.mp3", volume[0]);
+  const playDone = useSoundPlayer("/sounds/levelup.mp3", volume[0]);
   // Tracks the last remaining-seconds value we saw, so we fire each sound
   // (and each progress update) exactly once per second, not per re-render.
   const lastRemaining = React.useRef<number | null>(null);
@@ -125,7 +136,8 @@ export function FocusTime() {
   const activeMinutes =
     phase === "work"
       ? workMinutes || "25"
-      : (isLongBreak ? longBreakMinutes : breakMinutes) || (isLongBreak ? "15" : "5");
+      : (isLongBreak ? longBreakMinutes : breakMinutes) ||
+        (isLongBreak ? "15" : "5");
   const totalSeconds = Number(activeMinutes) * 60;
   const fillColor = phase === "work" ? "var(--v-blue)" : "var(--v-olive)";
 
@@ -208,7 +220,9 @@ export function FocusTime() {
       } else {
         setPhase("work");
         setIsLongBreak(false);
-        setReceipt(`Break's over — get ready for a fresh ${workMinutes || "25"}-minute session.`);
+        setReceipt(
+          `Break's over — get ready for a fresh ${workMinutes || "25"}-minute session.`,
+        );
       }
       // A short acknowledgment pause first; the countdown for the next
       // round starts once it elapses (or once Skip is pressed).
@@ -228,7 +242,16 @@ export function FocusTime() {
 
   return (
     <div style={frame}>
-      <div style={{ position: "fixed", top: 16, right: 16, zIndex: 50 }}>
+      <div
+        style={{
+          position: "fixed",
+          top: "calc(var(--marquee-row-height, 96px) + 16px)",
+          right: 16,
+          zIndex: 50,
+        }}
+        className="fixed flex gap-2 top-[calc(var(--marquee-row-height,96px)+16px)] right-4 z-50"
+      >
+        <SoundSettingPopover volume={volume} onVolumeChange={setVolume} />
         <DailyPlanPopover
           workMinutes={workMinutes}
           goalHours={dailyGoalHours}
@@ -240,7 +263,7 @@ export function FocusTime() {
         />
       </div>
 
-      <div style={{ display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+      <div className="flex gap-2 justify-center flex-wrap">
         <DurationPopover
           triggerLabel={`Work: ${workMinutes || "…"} min`}
           label="Work duration"
@@ -323,7 +346,9 @@ export function FocusTime() {
       {stage === "running" && (
         <FocusSession
           key={`${phase}-${activeMinutes}`}
-          name={phase === "work" ? "Make room for one good idea" : "Take a breather"}
+          name={
+            phase === "work" ? "Make room for one good idea" : "Take a breather"
+          }
           description={
             phase === "work"
               ? "One task. A little uninterrupted time."
@@ -338,7 +363,9 @@ export function FocusTime() {
           onStateChange={handleStateChange}
         />
       )}
-      <Meta data-example-receipt="focus-session" className="text-center">{receipt}</Meta>
+      <Meta data-example-receipt="focus-session" className="text-center">
+        {receipt}
+      </Meta>
     </div>
   );
 }

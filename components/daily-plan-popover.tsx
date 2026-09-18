@@ -34,94 +34,6 @@ type DailyPlanPopoverProps = {
   sessionsPlanned: number | null;
 };
 
-// Shared tokens for the two sections below, so "goal" and "long break" stay
-// visually identical without repeating each style object inline twice.
-const panelStyle: React.CSSProperties = {
-  display: "grid",
-  gap: 18,
-  minWidth: 260,
-  maxWidth: 300,
-};
-
-const sectionStyle: React.CSSProperties = {
-  display: "grid",
-  gap: 8,
-  justifyItems: "center",
-  textAlign: "center",
-};
-
-const sectionLabelStyle: React.CSSProperties = {
-  fontSize: 11,
-  fontWeight: 600,
-  letterSpacing: "0.06em",
-  textTransform: "uppercase",
-  opacity: 0.5,
-};
-
-const valueRowStyle: React.CSSProperties = {
-  display: "flex",
-  alignItems: "baseline",
-  gap: 6,
-};
-
-const bigNumberStyle: React.CSSProperties = {
-  fontSize: 36,
-  lineHeight: 1,
-  fontWeight: 700,
-  fontVariantNumeric: "tabular-nums",
-};
-
-const unitStyle: React.CSSProperties = { fontSize: 14, opacity: 0.6 };
-
-const chipRowStyle: React.CSSProperties = {
-  display: "flex",
-  gap: 6,
-  flexWrap: "wrap",
-  justifyContent: "center",
-};
-
-// One row instead of two separately-labeled "Decrease"/"Increase" blocks —
-// the − / + on each button plus the outline/secondary color split already
-// say which is which, so the extra headers were just noise.
-const stepperRowStyle: React.CSSProperties = {
-  display: "flex",
-  gap: 6,
-  alignItems: "center",
-  justifyContent: "center",
-  flexWrap: "wrap",
-};
-
-const stepperDividerStyle: React.CSSProperties = {
-  width: 1,
-  height: 18,
-  background: "var(--v-border, currentColor)",
-  opacity: 0.3,
-};
-
-const sectionDividerStyle: React.CSSProperties = {
-  height: 1,
-  background: "var(--v-border, currentColor)",
-  opacity: 0.2,
-};
-
-const summaryBoxStyle: React.CSSProperties = {
-  padding: "10px 12px",
-  borderRadius: "var(--r-md, 12px)",
-  background: "var(--v-beige, rgba(0,0,0,0.04))",
-  textAlign: "center",
-};
-
-/**
- * Today's plan: how many focused hours the user is aiming for, and how
- * long the periodic long break should be. Unlike DurationPopover, edits
- * here commit instantly on click — no confirm dialog — since changing the
- * day's goal doesn't interrupt whatever round is currently running, it
- * only changes the planning numbers (session counter, long-break timing).
- *
- * Assumes PopoverContent accepts an `align` prop the way most Radix-based
- * popovers do, to pin the panel under the top-right trigger instead of
- * centering it off-screen — its own source wasn't available to check.
- */
 export function DailyPlanPopover({
   workMinutes,
   goalHours,
@@ -135,51 +47,80 @@ export function DailyPlanPopover({
   const longBreakId = React.useId();
 
   const numericGoal = goalHours === "" ? null : Number(goalHours);
-  const matchedTemplate = FOCUS_GOAL_TEMPLATES.find((t) => t.hours === numericGoal) ?? null;
-  const atMinGoal = numericGoal !== null && numericGoal <= FOCUS_GOAL_MIN_HOURS;
-  const atMaxGoal = numericGoal !== null && numericGoal >= FOCUS_GOAL_MAX_HOURS;
+
+  const matchedTemplate =
+    FOCUS_GOAL_TEMPLATES.find((t) => t.hours === numericGoal) ?? null;
+
+  const atMinGoal =
+    numericGoal !== null && numericGoal <= FOCUS_GOAL_MIN_HOURS;
+
+  const atMaxGoal =
+    numericGoal !== null && numericGoal >= FOCUS_GOAL_MAX_HOURS;
 
   const clampGoal = (value: number) =>
-    Math.max(FOCUS_GOAL_MIN_HOURS, Math.min(FOCUS_GOAL_MAX_HOURS, value));
+    Math.max(
+      FOCUS_GOAL_MIN_HOURS,
+      Math.min(FOCUS_GOAL_MAX_HOURS, value),
+    );
 
-  const pickTemplate = (hours: number) => onGoalHoursChange(String(hours));
+  const pickTemplate = (hours: number) =>
+    onGoalHoursChange(String(hours));
 
   const adjustGoal = (delta: number) => {
     const base = numericGoal ?? 0;
-    // Round to the nearest 0.5 so repeated +/- clicks never drift off-grid
-    // from float error (e.g. 0.1 + 0.2 style rounding).
+
+    // Round to the nearest 0.5 so repeated +/- clicks never drift off-grid.
     const next = Math.round(clampGoal(base + delta) * 2) / 2;
     onGoalHoursChange(String(next));
   };
 
-  const pickLongBreak = (minutes: number) => onLongBreakMinutesChange(String(minutes));
+  const pickLongBreak = (minutes: number) =>
+    onLongBreakMinutesChange(String(minutes));
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <IconButton variant="pink" aria-label="Today's plan settings">
+        <IconButton
+          variant="pink"
+          aria-label="Today's plan settings"
+        >
           <AnimatedIcon name="settings" />
         </IconButton>
       </PopoverTrigger>
       <PopoverContent align="end">
-        <div style={panelStyle}>
-          <div style={sectionStyle} role="group" aria-labelledby={goalId}>
-            <Label id={goalId} style={sectionLabelStyle}>
+        <div className="grid min-w-64 max-w-90 gap-4 font-limelight">
+          {/* Today's focus goal */}
+          <div
+            className="grid justify-center justify-items-center gap-2 text-center"
+            role="group"
+            aria-labelledby={goalId}
+          >
+            <Label
+              id={goalId}
+              className="text-xs font-semibold uppercase tracking-wide opacity-50"
+            >
               Today&apos;s focus goal
             </Label>
 
-            <div style={valueRowStyle}>
-              <span style={bigNumberStyle}>{numericGoal ?? "—"}</span>
-              <span style={unitStyle}>hr</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-4xl leading-none font-bold tabular-nums">
+                {numericGoal ?? "—"}
+              </span>
+
+              <span className="text-sm opacity-60">hr</span>
             </div>
 
-            <div style={chipRowStyle}>
+            <div className="flex flex-wrap justify-center gap-1.5">
               {FOCUS_GOAL_TEMPLATES.map((template) => (
                 <Button
                   key={template.id}
                   type="button"
                   size="sm"
-                  variant={numericGoal === template.hours ? "accent" : "outline"}
+                  variant={
+                    numericGoal === template.hours
+                      ? "accent"
+                      : "outline"
+                  }
                   aria-pressed={numericGoal === template.hours}
                   onClick={() => pickTemplate(template.hours)}
                 >
@@ -188,27 +129,34 @@ export function DailyPlanPopover({
               ))}
             </div>
 
-            <Meta style={{ opacity: 0.75 }}>
+            <Meta className="opacity-75">
               {matchedTemplate
                 ? matchedTemplate.blurb
                 : "Pick a preset, or fine-tune below."}
             </Meta>
 
-            <div style={stepperRowStyle}>
-              {[...FOCUS_GOAL_STEP_HOURS].reverse().map((step) => (
-                <Button
-                  key={`goal-decrease-${step}`}
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  disabled={atMinGoal}
-                  aria-label={`Decrease goal by ${step} hours`}
-                  onClick={() => adjustGoal(-step)}
-                >
-                  −{step}h
-                </Button>
-              ))}
-              <span aria-hidden style={stepperDividerStyle} />
+            <div className="flex flex-wrap items-center justify-center gap-1.5">
+              {[...FOCUS_GOAL_STEP_HOURS]
+                .reverse()
+                .map((step) => (
+                  <Button
+                    key={`goal-decrease-${step}`}
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    disabled={atMinGoal}
+                    aria-label={`Decrease goal by ${step} hours`}
+                    onClick={() => adjustGoal(-step)}
+                  >
+                    −{step}h
+                  </Button>
+                ))}
+
+              <span
+                aria-hidden="true"
+                className="h-4.5 w-px bg-border opacity-30"
+              />
+
               {FOCUS_GOAL_STEP_HOURS.map((step) => (
                 <Button
                   key={`goal-increase-${step}`}
@@ -225,26 +173,47 @@ export function DailyPlanPopover({
             </div>
           </div>
 
-          <div aria-hidden style={sectionDividerStyle} />
+          {/* Section divider */}
+          <div
+            aria-hidden="true"
+            className="h-px bg-border opacity-20"
+          />
 
-          <div style={sectionStyle} role="group" aria-labelledby={longBreakId}>
-            <Label id={longBreakId} style={sectionLabelStyle}>
+          {/* Long break length */}
+          <div
+            className="grid justify-center justify-items-center gap-2 text-center"
+            role="group"
+            aria-labelledby={longBreakId}
+          >
+            <Label
+              id={longBreakId}
+              className="text-xs font-semibold uppercase tracking-wide opacity-50"
+            >
               Long break length
             </Label>
 
-            <div style={valueRowStyle}>
-              <span style={bigNumberStyle}>{longBreakMinutes || "—"}</span>
-              <span style={unitStyle}>min</span>
+            <div className="flex items-baseline gap-1.5">
+              <span className="text-4xl leading-none font-bold tabular-nums">
+                {longBreakMinutes || "—"}
+              </span>
+
+              <span className="text-sm opacity-60">min</span>
             </div>
 
-            <div style={chipRowStyle}>
+            <div className="flex flex-wrap justify-center gap-1.5">
               {LONG_BREAK_MINUTE_PRESETS.map((minutes) => (
                 <Button
                   key={minutes}
                   type="button"
                   size="sm"
-                  variant={Number(longBreakMinutes) === minutes ? "accent" : "outline"}
-                  aria-pressed={Number(longBreakMinutes) === minutes}
+                  variant={
+                    Number(longBreakMinutes) === minutes
+                      ? "accent"
+                      : "outline"
+                  }
+                  aria-pressed={
+                    Number(longBreakMinutes) === minutes
+                  }
                   onClick={() => pickLongBreak(minutes)}
                 >
                   {minutes} min
@@ -253,7 +222,8 @@ export function DailyPlanPopover({
             </div>
           </div>
 
-          <Meta style={summaryBoxStyle}>
+          {/* Summary */}
+          <Meta className="rounded-md bg-muted p-2.5 text-center">
             {sessionsPlanned
               ? `≈ ${sessionsPlanned} sessions of ${workMinutes} min today, with a longer break every ${longBreakEvery}.`
               : `Set a goal to see how many ${workMinutes}-minute sessions that is.`}
