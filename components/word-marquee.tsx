@@ -3,12 +3,18 @@
 import { Marquee } from "@/components/ui/marquee";
 import { Title } from "@/components/ui/typography";
 
-const words = ["A little wonder", "Room to grow", "Ideas in motion"];
 interface WordMarqueeProps {
     direction?: "left" | "right";
+    words?: string[];
 
 }
-export function WordMarquee({ direction = "left" }: WordMarqueeProps) {
+
+const wordlist = [
+  "LOK GOON",
+  "DONT OVERTHINK",
+  "JUST START",
+]
+export function WordMarquee({ direction = "left", words = wordlist }: WordMarqueeProps) {
   return (
     <Marquee
     direction={direction} 

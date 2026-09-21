@@ -3,6 +3,10 @@ import { WordMarquee } from "@/components/word-marquee";
 import { FocusBackground } from "@/components/focus-background";
 
 export default function Home() {
+  const words = [
+    "SAVE YOUR CODE",
+    "TOUCH GRASS",
+  ];
   return (
     <>
       {/* Top Bar */}
@@ -25,7 +29,7 @@ export default function Home() {
           aria-hidden
           className="absolute inset-0 w-[calc(var(--focus-progress,0)*100%)] bg-(--focus-fill,var(--v-blue)) opacity-35 transition-[width] duration-1000 ease-linear pointer-events-none"
         />
-        <WordMarquee direction="right" />
+        <WordMarquee direction="right" words={words} />
       </div>
     </>
   );
