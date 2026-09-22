@@ -4,15 +4,23 @@ import * as React from "react";
 import {
   FocusSession,
   type FocusAction,
+  type FocusSessionHandle,
   type FocusState,
 } from "@/components/focus-session";
 
 import { DurationPopover } from "@/components/duration-popover";
 import { DailyPlanPopover } from "@/components/daily-plan-popover";
 import { SoundSettingPopover } from "@/components/sound-setting-popover";
+import {
+  MiniFocusPortal,
+  MiniFocusView,
+  useMiniWindow,
+} from "@/components/mini-focus-window";
 import { Meta } from "@/components/ui/typography";
 
 import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon";
+import { AnimatedIcon } from "@/components/ui/animated-icon";
 
 type Phase = "work" | "break";
 
@@ -99,6 +107,9 @@ export function FocusTime() {
 
   const [volume, setVolume] = React.useState([50]);
 
+  const sessionRef = React.useRef<FocusSessionHandle | null>(null);
+  const mini = useMiniWindow();
+
   const playTick = useSoundPlayer("/sounds/orb.mp3", volume[0]);
   const playDone = useSoundPlayer("/sounds/levelup.mp3", volume[0]);
   // Tracks the last remaining-seconds value we saw, so we fire each sound
@@ -114,6 +125,14 @@ export function FocusTime() {
         (isLongBreak ? "15" : "5");
   const totalSeconds = Number(activeMinutes) * 60;
   const fillColor = phase === "work" ? "var(--v-blue)" : "var(--v-olive)";
+
+  // The running round's state lives up here so the mini window can mirror it
+  // and drive the session back through FocusSession's imperative handle.
+  const [focusState, setFocusState] = React.useState<FocusState>(() => ({
+    focusRemainingSeconds: totalSeconds,
+    focusRunning: false,
+    focusEndsAt: null,
+  }));
 
   // Reset the tick tracker and the marquee fill whenever a round is being
   // set up fresh (new duration/phase, or stepping back to "ready"/
@@ -146,7 +165,15 @@ export function FocusTime() {
 
     if (countdownRemaining <= 0) {
       playDone();
-      const goTimer = setTimeout(() => setStage("running"), 400);
+      const goTimer = setTimeout(() => {
+        setFocusState((current) => ({
+          ...current,
+          focusRemainingSeconds: totalSeconds,
+          focusRunning: true,
+          focusEndsAt: null,
+        }));
+        setStage("running");
+      }, 400);
       return () => clearTimeout(goTimer);
     }
 
@@ -156,7 +183,7 @@ export function FocusTime() {
       1000,
     );
     return () => clearTimeout(tickTimer);
-  }, [stage, countdownRemaining, playTick, playDone]);
+  }, [stage, countdownRemaining, playTick, playDone, totalSeconds]);
 
   function beginCountdown() {
     setCountdownRemaining(COUNTDOWN_SECONDS);
@@ -164,6 +191,7 @@ export function FocusTime() {
   }
 
   const handleStateChange = (state: FocusState) => {
+    setFocusState(state);
     const remaining = state.focusRemainingSeconds;
     if (remaining == null || remaining === lastRemaining.current) return;
     lastRemaining.current = remaining;
@@ -214,9 +242,56 @@ export function FocusTime() {
     setReceipt(label[event.action] ?? `Local session action: ${event.action}.`);
   };
 
+  // Once a round is underway the mini window mirrors its state; otherwise it
+  // previews the full duration of whichever round comes next.
+  const roundLive = stage === "running";
+  const miniRunning = roundLive && Boolean(focusState.focusRunning);
+  const miniRemaining = roundLive
+    ? Math.max(
+        0,
+        Math.min(totalSeconds, focusState.focusRemainingSeconds ?? totalSeconds),
+      )
+    : totalSeconds;
+
+  const toggleMiniSession = () => {
+    const session = sessionRef.current;
+    if (!session) return;
+    if (miniRunning) session.pause();
+    else session.start();
+  };
+
+  const resetMiniSession = () => sessionRef.current?.reset();
+
   return (
     <div className="grid w-full max-w-md min-w-0 mx-auto gap-5">
+      <MiniFocusPortal pipWindow={mini.pipWindow}>
+        <MiniFocusView
+          phase={phase}
+          isLongBreak={isLongBreak}
+          remaining={miniRemaining}
+          running={miniRunning}
+          canControl={roundLive}
+          onToggle={toggleMiniSession}
+          onReset={resetMiniSession}
+        />
+      </MiniFocusPortal>
+
       <div className="fixed flex gap-2 top-[calc(var(--marquee-row-height,96px)+16px)] right-4 z-50">
+        {mini.supported && (
+          <IconButton
+            variant={mini.pipWindow ? "beige" : "cream"}
+            aria-label={
+              mini.pipWindow ? "Close mini timer" : "Open mini timer window"
+            }
+            aria-pressed={Boolean(mini.pipWindow)}
+            onClick={() => {
+              if (mini.pipWindow) mini.close();
+              else void mini.open();
+            }}
+          >
+            <AnimatedIcon name="picture-in-picture-2" />
+          </IconButton>
+        )}
         <SoundSettingPopover
           volume={volume}
           onVolumeChange={setVolume}
@@ -335,7 +410,9 @@ export function FocusTime() {
 
       {stage === "running" && (
         <FocusSession
+          ref={sessionRef}
           key={`${phase}-${activeMinutes}`}
+          state={focusState}
           name={
             phase === "work"
               ? "Make room for one good idea"
@@ -347,7 +424,6 @@ export function FocusTime() {
               : "Step away. It will still be there when you return."
           }
           durationSeconds={totalSeconds}
-          defaultState={{ focusRunning: true }}
           onAction={action}
           onStateChange={handleStateChange}
         />

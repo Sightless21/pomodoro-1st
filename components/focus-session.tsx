@@ -16,6 +16,13 @@ export type FocusAction = {
   action: "start" | "pause" | "reset" | "complete";
 };
 
+/** Lets an outside surface (the mini window) drive the running session. */
+export type FocusSessionHandle = {
+  start: () => void;
+  pause: () => void;
+  reset: () => void;
+};
+
 export type FocusSessionProps = {
   name?: string;
   description?: string;
@@ -24,6 +31,7 @@ export type FocusSessionProps = {
   defaultState?: Partial<FocusState>;
   onStateChange?: (state: FocusState) => void;
   onAction?: (action: FocusAction) => void;
+  ref?: React.Ref<FocusSessionHandle>;
 };
 
 function normalizeDuration(value = 1500) {
@@ -42,6 +50,7 @@ export function FocusSession({
   defaultState,
   onStateChange,
   onAction,
+  ref,
 }: FocusSessionProps) {
   const duration = normalizeDuration(durationSeconds);
   const [local, setLocal] = React.useState<FocusState>(() => ({
@@ -113,6 +122,12 @@ export function FocusSession({
     }
     onAction?.({ action });
   }
+
+  React.useImperativeHandle(ref, () => ({
+    start: () => focusAction("start"),
+    pause: () => focusAction("pause"),
+    reset: () => focusAction("reset"),
+  }));
 
   return (
     <div className="grid justify-items-center gap-5 text-center">
