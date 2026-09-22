@@ -10,7 +10,7 @@ interface WordMarqueeProps {
 }
 
 const wordlist = [
-  "LOK GOON",
+  "Gonx",
   "DONT OVERTHINK",
   "JUST START",
 ]
