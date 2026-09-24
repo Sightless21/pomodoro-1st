@@ -1,7 +1,7 @@
 import { FocusTime } from "@/components/focus-time";
 // import { WordMarquee } from "@/components/word-marquee";
 import { FocusBackground } from "@/components/focus-background";
-import { CarMarquee , WordMarqueen } from "@/components/card-marquee";
+import { CarMarquee , WordMarqueen } from "@/components/marquee";
 export default function Home() {
   return (
     <>
