@@ -6,7 +6,6 @@ import { Title } from "@/components/ui/typography";
 interface WordMarqueeProps {
     direction?: "left" | "right";
     words?: string[];
-
 }
 
 const wordlist = [
