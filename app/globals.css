@@ -33,6 +33,7 @@
 @import "../styles/cojeev/marquee.css";
 @import "../styles/cojeev/slider.css";
 @import "../styles/cojeev/meta-balls.css";
+@import "../styles/cojeev/buy-me-coffee.css";
 
 @custom-variant dark (&:is(.dark *));
 
