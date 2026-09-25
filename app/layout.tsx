@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next"
 import { Geist, Geist_Mono, Limelight} from "next/font/google";
 import "./globals.css";
 
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} ${limelight.variable} h-full antialiased`}
     >
+      <Analytics />
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
