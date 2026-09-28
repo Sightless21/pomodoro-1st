@@ -93,7 +93,7 @@ export function DurationPopover({
         </PopoverTrigger>
         <PopoverContent>
           <div
-            className="grid gap-4 justify-items-center min-w-60 font-limelight"
+            className="grid gap-4 justify-items-center min-w-60 max-w-[calc(100dvw-4rem)] font-limelight"
           >
             <Label htmlFor={id}>{label}</Label>
 

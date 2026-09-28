@@ -107,19 +107,19 @@ export function CarMarquee({
           key={index}
           className={cn(
             `${cardBackground ? `bg-white rounded-2xl` : `rounded-[--r-card] bg-[--card]`}`,
-            `flex min-w-0 items-center gap-4 px-5 py-4`,
+            `flex min-w-0 items-center gap-2.5 sm:gap-4 px-3.5 sm:px-5 py-2.5 sm:py-4`,
           )}
         >
           <Shape
             name={topic.shape}
-            className="size-12"
+            className="size-9 sm:size-12"
             style={{ "--c": topic.color } as React.CSSProperties}
           />
           <div className="grid min-w-0 gap-1">
             <Title as="h4" className="text-base">
               {topic.title}
             </Title>
-            <BodySecondary className="text-sm">{topic.note}</BodySecondary>
+            <BodySecondary className="hidden sm:block text-sm">{topic.note}</BodySecondary>
           </div>
         </div>
       ))}
@@ -141,14 +141,14 @@ export function WordMarqueen({
       speed={speed}
     >
       {words.map((word, index) => (
-        <div key={index} className="flex items-center min-w-0 gap-4 px-5 py-4">
+        <div key={index} className="flex items-center min-w-0 gap-2.5 sm:gap-4 px-3.5 sm:px-5 py-2.5 sm:py-4">
           <Shape
             name={word.shape}
-            className="size-12"
+            className="size-9 sm:size-12"
             style={{ "--c": word.color } as React.CSSProperties}
           />
           <div className="grid min-w-0 gap-1">
-            <Title as="span" className="text-4xl!">{word.title}</Title>
+            <Title as="span" className="text-2xl sm:text-4xl!">{word.title}</Title>
           </div>
         </div>
       ))}

@@ -55,6 +55,7 @@ export function PopoverContent({
   sideOffset = 6,
   align = "start",
   portal = true,
+  collisionPadding = 16,
   ...props
 }: PopoverContentProps) {
   const morphRef = useMorph<HTMLDivElement>("surfaces", ref);
@@ -66,7 +67,12 @@ export function PopoverContent({
       data-part="content"
       sideOffset={sideOffset}
       align={align}
-      className={cn(popoverContentVariants(), className)}
+      collisionPadding={collisionPadding}
+      className={cn(
+        popoverContentVariants(),
+        "max-w-[calc(100dvw-2rem)]",
+        className,
+      )}
       {...props}
     >
       {children}

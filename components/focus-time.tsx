@@ -263,7 +263,7 @@ export function FocusTime() {
   const resetMiniSession = () => sessionRef.current?.reset();
 
   return (
-    <div className="grid w-full max-w-md min-w-0 mx-auto gap-5">
+    <div className="grid w-full max-w-md min-w-0 mx-auto gap-5 px-4 sm:px-0">
       <MiniFocusPortal pipWindow={mini.pipWindow}>
         <MiniFocusView
           phase={phase}
@@ -276,7 +276,7 @@ export function FocusTime() {
         />
       </MiniFocusPortal>
 
-      <div className="fixed flex gap-2 top-[calc(var(--marquee-row-height,96px)+16px)] right-4 z-50">
+      <div className="fixed flex gap-2 top-[calc(var(--marquee-row-height)+12px)] right-3 sm:right-4 z-50">
         {mini.supported && (
           <IconButton
             variant={mini.pipWindow ? "beige" : "cream"}
@@ -307,7 +307,7 @@ export function FocusTime() {
         />
       </div>
 
-      <div className="flex flex-wrap justify-center gap-2">
+      <div className="flex max-w-full flex-wrap justify-center gap-2">
         <DurationPopover
           triggerLabel={`Work: ${workMinutes || "…"} min`}
           label="Work duration"
@@ -346,7 +346,7 @@ export function FocusTime() {
       </Meta>
 
       {stage === "ready" && (
-        <div className="grid min-h-56 content-center justify-items-center gap-4 text-center">
+        <div className="grid min-h-40 sm:min-h-56 content-center justify-items-center gap-4 text-center">
           <Meta>
             {phase === "work"
               ? "One task. A little uninterrupted time."
@@ -372,7 +372,7 @@ export function FocusTime() {
 
       {stage === "complete" && (
         <div
-          className="grid min-h-56 content-center justify-items-center gap-4 text-center"
+          className="grid min-h-40 sm:min-h-56 content-center justify-items-center gap-4 text-center"
           aria-live="polite"
         >
           <Meta className="text-xl font-semibold">
@@ -391,7 +391,7 @@ export function FocusTime() {
 
       {stage === "countdown" && (
         <div
-          className="grid min-h-56 content-center justify-items-center gap-4 text-center"
+          className="grid min-h-40 sm:min-h-56 content-center justify-items-center gap-4 text-center"
           aria-live="polite"
         >
           <Meta>
@@ -400,7 +400,7 @@ export function FocusTime() {
               : "Break starts in"}
           </Meta>
 
-          <span className="text-8xl leading-none font-bold tabular-nums">
+          <span className="text-6xl sm:text-8xl leading-none font-bold tabular-nums">
             {countdownRemaining > 0
               ? countdownRemaining
               : "Go"}

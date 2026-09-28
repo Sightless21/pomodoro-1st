@@ -14,7 +14,7 @@ export default function Home() {
         <WordMarqueen direction="left" speed="slow" />
       </div>
 
-      <main className="relative min-h-dvh flex items-center justify-center pt-(--marquee-row-height,96px) pb-(--marquee-row-height,96px) font-limelight">
+      <main className="relative min-h-dvh flex items-center justify-center pt-(--marquee-row-height) pb-(--marquee-row-height) font-limelight">
         <FocusBackground />
         <FocusTime />
       </main>

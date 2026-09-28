@@ -37,6 +37,27 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ------------------------------------------------------------------
+   Responsive layout tokens
+   The marquee bars' height is published as --marquee-row-height so the
+   fixed bars, the settings cluster below the top bar, and the page's
+   vertical padding all stay in sync. It shrinks on small screens so
+   the timer keeps most of the viewport on phones and tablets.
+   ------------------------------------------------------------------ */
+:root {
+  --marquee-row-height: 104px; /* default desktop row height */
+}
+@media (max-width: 767px) {
+  :root {
+    --marquee-row-height: 88px;
+  }
+}
+@media (max-width: 400px) {
+  :root {
+    --marquee-row-height: 76px;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

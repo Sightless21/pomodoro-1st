@@ -117,7 +117,7 @@ export function AlertDialogFooter({
       data-slot="alert-dialog-footer"
       data-part="footer"
       className={cn(
-        "v-dialog__actions flex gap-[var(--s-3)] justify-end mt-[var(--s-2)]",
+        "v-dialog__actions flex flex-wrap gap-[var(--s-3)] justify-end mt-[var(--s-2)]",
         className,
       )}
       {...props}

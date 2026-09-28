@@ -135,14 +135,14 @@ export function FocusSession({
         role="timer"
         aria-live="off"
         aria-label={`${Math.floor(remaining / 60)} minutes ${remaining % 60} seconds remaining`}
-        className="text-[90px] leading-none font-bold tabular-nums"
+        className="text-[length:clamp(56px,17vw,90px)] leading-none font-bold tabular-nums"
       >
         {String(Math.floor(remaining / 60)).padStart(2, "0")}
         <span>:</span>
         {String(remaining % 60).padStart(2, "0")}
       </Meta>
 
-      <div className="flex items-center gap-2.5">
+      <div className="flex flex-wrap items-center justify-center gap-2.5">
         <Button
           variant="accent"
           onClick={() =>
