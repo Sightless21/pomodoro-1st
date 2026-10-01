@@ -96,7 +96,7 @@
   background: var(--v-pink);
 }
 [data-flow-owned].v-glide.-underline > .v-glide__hover {
-  border-radius: 10px;
+  border-radius: var(--r-md);
 }
 [data-flow-owned].v-glide.-underline [data-glide-active] {
   color: var(--v-text);
@@ -109,6 +109,14 @@
 }
 .v-tabs[data-flow-owned].v-glide > .v-tab {
   transition: none;
+}
+/* Opt-in (the motion settings preview): the arriving label takes its
+   selected ink as the surface lands, so it never reads dark on the bare track. */
+@media (prefers-reduced-motion: no-preference) {
+  .v-tabs[data-flow-owned][data-flow-label="land"].v-glide
+    > .v-tab[aria-selected="true"] {
+    transition: color var(--t-micro) ease var(--flow-dur);
+  }
 }
 .v-nav[data-flow-owned].v-glide > .v-glide__pill > i,
 .v-nav[data-flow-owned].v-glide > .v-glide__trail > i {
@@ -128,7 +136,7 @@
   transition: background-color var(--t-flow-hover) ease;
 }
 .v-seg[data-flow-owned].v-glide > .v-glide__pill {
-  border-radius: 999px;
+  border-radius: var(--r-pill);
 }
 .v-seg.-pink[data-flow-owned].v-glide > .v-glide__pill > i,
 .v-seg.-pink[data-flow-owned].v-glide > .v-glide__trail > i {
@@ -277,7 +285,7 @@
   display: none;
 }
 [data-flow-owned].v-glide[data-flow-kind="bar"] > .v-glide__hover {
-  border-radius: 10px;
+  border-radius: var(--r-md);
 }
 :root[data-flow-hover="off"] [data-flow-owned].v-glide > .v-glide__hover,
 [data-flow-owned].v-glide[data-flow-hover="off"] > .v-glide__hover {
@@ -699,11 +707,11 @@
     opacity: 0;
   }
 }
-[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide.-still
+[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide:is(.-still, [data-flow-still])
   > .v-glide__pill,
-[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide.-still
+[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide:is(.-still, [data-flow-still])
   > .v-glide__hover,
-[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide.-still
+[data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned][data-flow-owned].v-glide:is(.-still, [data-flow-still])
   > .v-glide__trail {
   transition: none;
 }
@@ -1133,7 +1141,8 @@
   > i::after {
   animation: none;
 }
-[data-flow-engine="motion"] > .v-glide__trail {
+/* Matches the shared layer rule's weight, which would otherwise pin the trail to the pill and hide Comet's tail. */
+[data-flow-owned][data-flow-engine="motion"].v-glide > .v-glide__trail {
   transform: translate3d(var(--trail-x, 0px), var(--trail-y, 0px), 0);
   width: var(--trail-w, 0px);
   height: var(--trail-h, 0px);

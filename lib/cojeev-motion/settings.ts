@@ -34,6 +34,8 @@ export const FLOW_CHARACTERS:Record<FlowVariant,{label:string;duration:number;ea
  halo:{label:"Halo",duration:.4,ease:"cubic-bezier(.3,1.2,.4,1)",land:"vf-land",glow:"vf-glow"},
  off:{label:"Off",duration:0,ease:"linear",land:"none"},
 }
+/** Characters whose landing Intensity shapes. The others land the same at any intensity, so the sheet disables the slider for them. */
+export const FLOW_INTENSITY:ReadonlySet<FlowVariant>=new Set(["jelly","pebble","ripple","halo"])
 const defaultSettings:MotionSettings={v:3,mode:"subtle",cats:{buttons:true,icons:true,pills:true,cards:false,skeleton:true,nav:false,inputs:false,controls:false,surfaces:false}}
 function runtime():MorphProfile {
  const TIER=structuredClone(factoryTiers)
@@ -76,12 +78,16 @@ export function flowToken(name:string,fallback:string,el?:Element){try{return ge
 export function flowTokenMs(name:string,fallback:number,el?:Element){const v=flowToken(name,"",el),n=parseFloat(v);return Number.isFinite(n)?n*(v.endsWith("ms")?1:1000):fallback}
 export function applyFlowSettings(){
  if(typeof document==="undefined")return
- const h=document.documentElement,variant=settings.mode==="off"?"off":flow.variant,c=FLOW_CHARACTERS[variant]
- h.dataset.flow=variant;h.dataset.flowHover=flow.hover?"on":"off"
- h.style.setProperty("--flow-speed",String(flow.speed));h.style.setProperty("--flow-intensity",String(flow.intensity));h.style.setProperty("--flow-hover",String(flow.hoverStrength))
- h.style.setProperty("--flow-ease",variant==="off"?c.ease:flowToken("--e-flow-"+variant,c.ease))
- h.style.setProperty("--flow-dur",((variant==="off"?0:flowTokenMs("--t-flow-"+variant,c.duration*1000))/1000/flow.speed).toFixed(3)+"s")
- h.style.setProperty("--flow-land",c.land);h.style.setProperty("--flow-glow",c.glow||"none")
+ const h=document.documentElement,variant=settings.mode==="off"?"off":flow.variant,c=FLOW_CHARACTERS[variant],hover=flow.hover?"on":"off"
+ // Read the character tokens before any root write: a computed read after one forces a
+ // whole-document style pass. Unchanged writes are skipped, as they still wake every observer.
+ const values:Record<string,string>={"--flow-speed":String(flow.speed),"--flow-intensity":String(flow.intensity),"--flow-hover":String(flow.hoverStrength),
+  "--flow-ease":variant==="off"?c.ease:flowToken("--e-flow-"+variant,c.ease),
+  "--flow-dur":((variant==="off"?0:flowTokenMs("--t-flow-"+variant,c.duration*1000))/1000/flow.speed).toFixed(3)+"s",
+  "--flow-land":c.land,"--flow-glow":c.glow||"none"}
+ if(h.dataset.flow!==variant)h.dataset.flow=variant
+ if(h.dataset.flowHover!==hover)h.dataset.flowHover=hover
+ for(const [name,value] of Object.entries(values))if(h.style.getPropertyValue(name)!==value)h.style.setProperty(name,value)
 }
 function publish(){
  const next={motion:settings,flow,profile,authored}

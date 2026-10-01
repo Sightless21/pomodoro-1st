@@ -1,7 +1,7 @@
 import { FocusTime } from "@/components/focus-time";
 // import { WordMarquee } from "@/components/word-marquee";
 import { FocusBackground } from "@/components/focus-background";
-import { CarMarquee , WordMarqueen } from "@/components/marquee";
+import { CarMarquee, WordMarqueen } from "@/components/marquee";
 export default function Home() {
   return (
     <>
@@ -25,7 +25,7 @@ export default function Home() {
           aria-hidden
           className="absolute inset-0 w-[calc(var(--focus-progress,0)*100%)] bg-(--focus-fill,var(--v-blue)) opacity-35 transition-[width] duration-1000 ease-linear pointer-events-none"
         />
-        <CarMarquee direction="right" speed="slow"/>
+        <CarMarquee direction="right" speed="slow" />
       </div>
     </>
   );

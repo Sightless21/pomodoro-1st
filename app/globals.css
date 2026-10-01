@@ -34,6 +34,8 @@
 @import "../styles/cojeev/slider.css";
 @import "../styles/cojeev/meta-balls.css";
 @import "../styles/cojeev/buy-me-coffee.css";
+@import "../styles/cojeev/checkbox.css";
+@import "../styles/cojeev/choice-foundations.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -297,6 +299,14 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --text-v-reading: var(--fs-reading);
+  --text-v-small: var(--fs-small);
+  --font-weight-v-regular: var(--fw-regular);
+  --font-weight-v-medium: var(--fw-medium);
+  --font-weight-v-semibold: var(--fw-semibold);
+  --font-weight-v-bold: var(--fw-bold);
+  --spacing-s-7: var(--s-7);
+  --spacing-ctl-xl: var(--ctl-xl);
 }
 
 :root {
