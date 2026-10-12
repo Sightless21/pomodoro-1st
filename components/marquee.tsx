@@ -86,6 +86,11 @@ const wordsDefault: Word[] = [
     shape: "cloud-3",
     color: "var(--v-pink)",
   },
+  {
+    title: "น้องไหม",
+    shape: "cloud-3",
+    color: "var(--v-pink)",
+  },
 ];
 
 export function CarMarquee({
